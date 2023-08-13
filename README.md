@@ -1,2 +1,3 @@
-# producer-consumer-java
-This is a Java application that utilizes multiple producer threads to create items and place them into a shared, thread-safe queue. The producer threads will continue to create and enqueue items, coordinating with consumer threads if applicable. My objective is to research the behavior of the application under different scenarios and conditions, and to log the corresponding results and insights.
+# Laboratory-Concurrency
+This app is about a monitor of concurrency performance data.
+It will be collecting data from the process of a csv file. 
