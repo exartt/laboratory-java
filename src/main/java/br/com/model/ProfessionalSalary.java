@@ -1,11 +1,9 @@
 package br.com.model;
 
-import br.com.service.enums.JobTitleEnum;
-
 public class ProfessionalSalary {
   private double rating;
   private String companyName;
-  private JobTitleEnum jobTitle;
+  private String jobTitle;
   private double salary;
   private int reports;
   private String location;
@@ -26,11 +24,11 @@ public class ProfessionalSalary {
     this.companyName = companyName;
   }
 
-  public JobTitleEnum getJobTitle() {
+  public String getJobTitle() {
     return jobTitle;
   }
 
-  public void setJobTitle(JobTitleEnum jobTitle) {
+  public void setJobTitle(String jobTitle) {
     this.jobTitle = jobTitle;
   }
 

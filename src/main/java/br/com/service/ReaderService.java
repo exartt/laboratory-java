@@ -2,10 +2,8 @@ package br.com.service;
 
 import br.com.adapters.IReaderService;
 import br.com.model.ProfessionalSalary;
-import br.com.service.enums.JobTitleEnum;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +14,8 @@ import java.util.List;
 
 public class ReaderService implements IReaderService {
     private static final int MAX_ROWS = 1000;
-    private static final String SEPARATOR = ",";
+    private static final char QUOTE_CHAR = '\"';
+    private static final char DELIMITER = ',';
     @Override
     public List<Path> createBuckets(Path pathFile) throws IOException {
         List<String> allLines = Files.readAllLines(pathFile);
@@ -34,7 +33,7 @@ public class ReaderService implements IReaderService {
     }
 
     @Override
-    public List<ProfessionalSalary> read(String partFilePath) throws FileNotFoundException {
+    public List<ProfessionalSalary> read(String partFilePath) throws Exception {
         List<ProfessionalSalary> professionalSalaryList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(partFilePath))) {
@@ -43,23 +42,21 @@ public class ReaderService implements IReaderService {
             br.readLine();
 
             while ((linha = br.readLine()) != null) {
-                String[] valores = linha.split(SEPARATOR);
+                List<String> valores = splitCSVLine(linha);
 
-                if (valores.length != 2) {
-                    continue;
-                }
-
-                double rating = Double.parseDouble(valores[0].trim());
-                String companyName = valores[1].trim();
-                JobTitleEnum jobTitle = JobTitleEnum.valueOf(valores[2].trim());
-                double salary = Double.parseDouble(valores[3].trim());
-                int reports = Integer.parseInt(valores[4].trim());
-                String location = valores[5].trim();
+                double rating = Double.parseDouble(valores.get(0).trim());
+                String companyName = valores.get(1).trim();
+                String jobTitle = valores.get(2).trim();
+                double salary = Double.parseDouble(valores.get(3).trim());
+                int reports = Integer.parseInt(valores.get(4).trim());
+                String location = valores.get(5).trim();
 
                 ProfessionalSalary professionalSalary = new ProfessionalSalary();
                 professionalSalary.setRating(rating);
                 professionalSalary.setCompanyName(companyName);
-                professionalSalary.setJobTitle(jobTitle);
+                if (!jobTitle.isBlank()) {
+                    professionalSalary.setJobTitle(jobTitle);
+                }
                 professionalSalary.setSalary(salary);
                 professionalSalary.setReports(reports);
                 professionalSalary.setLocation(location);
@@ -68,9 +65,41 @@ public class ReaderService implements IReaderService {
             }
         } catch (IOException e) {
           throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new Exception(e);
         }
 
       return professionalSalaryList;
     }
 
+    public static List<String> splitCSVLine(String line) {
+        List<String> fields = new ArrayList<>();
+        boolean insideQuotes = false;
+        StringBuilder currentField = new StringBuilder();
+
+        for (char currentChar : line.toCharArray()) {
+            if (isQuoteChar(currentChar)) {
+                insideQuotes = !insideQuotes;
+                continue;
+            }
+
+            if (isDelimiterOutsideQuotes(currentChar, insideQuotes)) {
+                fields.add(currentField.toString());
+                currentField.setLength(0);
+            } else {
+                currentField.append(currentChar);
+            }
+        }
+        fields.add(currentField.toString());
+
+        return fields;
+    }
+
+    private static boolean isQuoteChar(char character) {
+        return character == QUOTE_CHAR;
+    }
+
+    private static boolean isDelimiterOutsideQuotes(char character, boolean insideQuotes) {
+        return character == DELIMITER && !insideQuotes;
+    }
 }
