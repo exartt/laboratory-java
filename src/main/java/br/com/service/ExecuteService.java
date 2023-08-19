@@ -20,7 +20,7 @@ public class ExecuteService implements IExecuteService {
   private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
   private final IReaderService readerService;
   private final IMappingService mappingService;
-  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(10);
+  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(5);
 
 
   public ExecuteService(IReaderService readerService, IMappingService mappingService) {

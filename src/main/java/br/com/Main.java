@@ -6,6 +6,10 @@ import br.com.service.ExecuteService;
 import br.com.service.MappingService;
 import br.com.service.ReaderService;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -13,8 +17,27 @@ public class Main {
         IReaderService readerService = new ReaderService();
 
         ExecuteService executeService = new ExecuteService(readerService, mappingService);
-        while(true) {
-            executeService.execute();
+
+        Semaphore semaphore = new Semaphore(3);
+
+        ExecutorService mainExecutor = Executors.newCachedThreadPool();
+
+        while (true) {
+            try {
+                semaphore.acquire();
+
+                mainExecutor.submit(() -> {
+                    try {
+                        executeService.execute();
+                    } finally {
+                        semaphore.release();
+                    }
+                });
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
     }
 

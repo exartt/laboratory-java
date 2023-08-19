@@ -23,7 +23,7 @@ public class ReaderService implements IReaderService {
 
         for (int i = 0; i < allLines.size(); i += MAX_ROWS) {
             List<String> partition = allLines.subList(i, Math.min(i + MAX_ROWS, allLines.size()));
-            Path tempFile = Files.createTempFile("bucket", (i / MAX_ROWS) + ".csv");
+            Path tempFile = Files.createTempFile("bucket", System.currentTimeMillis() + (i / MAX_ROWS) + ".csv");
             tempFile.toFile().deleteOnExit();
             Files.write(tempFile, partition, StandardOpenOption.WRITE);
             tempFiles.add(tempFile);
