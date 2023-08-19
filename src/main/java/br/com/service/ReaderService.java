@@ -54,9 +54,7 @@ public class ReaderService implements IReaderService {
                 ProfessionalSalary professionalSalary = new ProfessionalSalary();
                 professionalSalary.setRating(rating);
                 professionalSalary.setCompanyName(companyName);
-                if (!jobTitle.isBlank()) {
-                    professionalSalary.setJobTitle(jobTitle);
-                }
+                professionalSalary.setJobTitle(jobTitle);
                 professionalSalary.setSalary(salary);
                 professionalSalary.setReports(reports);
                 professionalSalary.setLocation(location);

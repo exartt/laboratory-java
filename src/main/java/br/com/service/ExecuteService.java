@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 
 public class ExecuteService implements IExecuteService {
   private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteService.class);
-  private static final String filePath = "/home/leomoraes/Downloads/archive/Software_Professional_Salaries.csv";
+  private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
   private final IReaderService readerService;
   private final IMappingService mappingService;
   private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(10);
