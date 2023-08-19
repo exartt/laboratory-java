@@ -13,8 +13,9 @@ public class Main {
         IReaderService readerService = new ReaderService();
 
         ExecuteService executeService = new ExecuteService(readerService, mappingService);
-
-        executeService.execute();
+        while(true) {
+            executeService.execute();
+        }
     }
 
 }
