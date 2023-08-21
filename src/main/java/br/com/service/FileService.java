@@ -1,18 +1,20 @@
 package br.com.service;
 
-import br.com.adapters.IReaderService;
+import br.com.adapters.IFileService;
 import br.com.model.ProfessionalSalary;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReaderService implements IReaderService {
+public class FileService implements IFileService {
     private static final int MAX_ROWS = 1000;
     private static final char QUOTE_CHAR = '\"';
     private static final char DELIMITER = ',';
@@ -68,6 +70,27 @@ public class ReaderService implements IReaderService {
         }
 
       return professionalSalaryList;
+    }
+
+    @Override
+    public Path write(List<ProfessionalSalary> professionalSalaries) throws IOException {
+        Path tempFile = Files.createTempFile("bucket_result_", System.currentTimeMillis() + ".csv");
+
+        try (BufferedWriter writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8)) {
+            writer.write("Rating,CompanyName,JobTitle,Salary,Reports,Location\n");
+
+            for (ProfessionalSalary salary : professionalSalaries) {
+                writer.write(String.format("%f,%s,%d,%f,%d,%d\n",
+                        salary.getRating(),
+                        salary.getCompanyName(),
+                        Integer.valueOf(salary.getJobTitle()),
+                        salary.getSalary(),
+                        salary.getReports(),
+                        Integer.valueOf(salary.getLocation())));
+            }
+        }
+
+        return tempFile;
     }
 
     public static List<String> splitCSVLine(String line) {
