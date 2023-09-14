@@ -4,10 +4,7 @@ import br.com.adapters.IExecuteService;
 import br.com.adapters.IMappingService;
 import br.com.adapters.IFileService;
 import br.com.model.ProfessionalSalary;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,11 +16,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ExecuteService implements IExecuteService {
-  private static final Logger LOGGER = LoggerFactory.getLogger(ExecuteService.class);
-  private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
+  private static final String filePath = "C:\\Users\\leo_m\\OneDrive\\Documentos\\RunProject\\Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
-  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(5);
+  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(1);
 
 
   public ExecuteService(IFileService fileService, IMappingService mappingService) {
@@ -32,19 +28,19 @@ public class ExecuteService implements IExecuteService {
   }
 
   @Override
-  public void execute() {
+  public List<Long> execute() {
     try {
-//      LOGGER.info("Iniciando a execução do serviço...");
       List<Path> tempFiles = fileService.createBuckets(Paths.get(filePath));
       CountDownLatch latch = new CountDownLatch(tempFiles.size());
       List<Path> processedFiles = Collections.synchronizedList(new ArrayList<>());
+      List<Long> memoryUsed = Collections.synchronizedList(new ArrayList<>());
 
       for (Path tempFile : tempFiles) {
         bucketExecutor.submit(() -> {
           try {
-//            LOGGER.info("Processando arquivo temporário: {}", tempFile);
+            long initialMemory = getMemoryNow();
             List<ProfessionalSalary> professionalSalaries = fileService.read(tempFile.toString());
-
+            memoryUsed.add(this.getMemoryUsed(initialMemory));
             for (ProfessionalSalary professionalSalary : professionalSalaries) {
               int titleHash = mappingService.getTitleHash(professionalSalary.getJobTitle());
               int locationHash = mappingService.getLocationHash(professionalSalary.getLocation());
@@ -52,15 +48,14 @@ public class ExecuteService implements IExecuteService {
               professionalSalary.setJobTitle(String.valueOf(titleHash));
               professionalSalary.setLocation(String.valueOf(locationHash));
             }
+            memoryUsed.add(this.getMemoryUsed(initialMemory));
 
             processedFiles.add(fileService.write(professionalSalaries));
+            memoryUsed.add(this.getMemoryUsed(initialMemory));
 
             this.deleteFile(tempFile);
-//            LOGGER.info("Arquivo temporário {} excluído com sucesso", tempFile);
 
-          } catch (Exception e) {
-//            LOGGER.error("Erro ao processar o arquivo temporário {}", tempFile, e);
-
+          } catch (Exception e){
             throw new RuntimeException("Erro ao executar o serviço", e);
           } finally {
             latch.countDown();
@@ -68,10 +63,13 @@ public class ExecuteService implements IExecuteService {
         });
       }
 
+
       latch.await();
+
       processedFiles.forEach(this::deleteFile);
 
-      LOGGER.info("Todos os arquivos temporários foram processados.");
+      return memoryUsed;
+
     } catch (Exception e) {
       throw new RuntimeException("Erro ao executar o serviço", e);
     }
@@ -84,4 +82,13 @@ public class ExecuteService implements IExecuteService {
       throw new RuntimeException(e);
     }
   }
+
+  public long getMemoryNow() {
+    return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+  }
+
+  public long getMemoryUsed(long initialMemory) {
+    return this.getMemoryNow() - initialMemory;
+  }
+
 }

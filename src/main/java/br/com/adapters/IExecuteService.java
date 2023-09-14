@@ -1,5 +1,7 @@
 package br.com.adapters;
 
+import java.util.List;
+
 public interface IExecuteService {
-  void execute ();
+  List<Long> execute ();
 }
