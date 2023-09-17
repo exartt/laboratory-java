@@ -1,7 +1,7 @@
 package br.com.adapters;
 
-import java.util.List;
+import br.com.model.ExecutionResult;
 
 public interface IExecuteService {
-  List<Long> execute ();
+  ExecutionResult execute ();
 }

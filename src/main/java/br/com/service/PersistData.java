@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class PersistData implements IPersist {
-    private static final String INSERT_SQL = "INSERT INTO j_data (m_memory, m_speed_up, m_efficiency, m_execution_time, m_is_single_thread) VALUES (?, ?, ?, ?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO j_data (m_memory, m_speed_up, m_efficiency, m_execution_time, m_is_single_thread, m_overhead, m_iddle_thread) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     public void insert(DataCollected dataCollected) {
         try (Connection conn = DatabaseConnection.getConnection();
@@ -20,6 +20,8 @@ public class PersistData implements IPersist {
             stmt.setDouble(3, dataCollected.getEfficiency());
             stmt.setLong(4, dataCollected.getExecutionTime());
             stmt.setBoolean(5, dataCollected.isSingleThread());
+            stmt.setLong(6, dataCollected.getOverHead());
+            stmt.setDouble(7, dataCollected.getIdleThreadTimeMedian());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

@@ -3,6 +3,7 @@ package br.com.service;
 import br.com.adapters.IExecuteService;
 import br.com.adapters.IMappingService;
 import br.com.adapters.IFileService;
+import br.com.model.ExecutionResult;
 import br.com.model.ProfessionalSalary;
 
 import java.nio.file.Files;
@@ -11,16 +12,20 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuteService implements IExecuteService {
   private static final String filePath = "C:\\Users\\leo_m\\OneDrive\\Documentos\\RunProject\\Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
   private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(1);
-
+  private final Map<Thread, Long> idleTimes = new ConcurrentHashMap<>();
+  private final AtomicInteger idleCount = new AtomicInteger(0);
 
   public ExecuteService(IFileService fileService, IMappingService mappingService) {
     this.fileService = fileService;
@@ -28,7 +33,7 @@ public class ExecuteService implements IExecuteService {
   }
 
   @Override
-  public List<Long> execute() {
+  public ExecutionResult execute() {
     try {
       List<Path> tempFiles = fileService.createBuckets(Paths.get(filePath));
       CountDownLatch latch = new CountDownLatch(tempFiles.size());
@@ -37,6 +42,7 @@ public class ExecuteService implements IExecuteService {
 
       for (Path tempFile : tempFiles) {
         bucketExecutor.submit(() -> {
+          long startTime = System.currentTimeMillis();
           try {
             long initialMemory = getMemoryNow();
             List<ProfessionalSalary> professionalSalaries = fileService.read(tempFile.toString());
@@ -58,18 +64,23 @@ public class ExecuteService implements IExecuteService {
           } catch (Exception e){
             throw new RuntimeException("Erro ao executar o serviço", e);
           } finally {
+            long endTime = System.currentTimeMillis();
+            long idleTime = endTime - startTime;
+
+            if (idleTime > 0) {
+              idleTimes.merge(Thread.currentThread(), idleTime, Long::sum);
+              idleCount.incrementAndGet();
+            }
             latch.countDown();
           }
         });
       }
 
-
       latch.await();
 
       processedFiles.forEach(this::deleteFile);
 
-      return memoryUsed;
-
+      return new ExecutionResult(memoryUsed, idleTimes);
     } catch (Exception e) {
       throw new RuntimeException("Erro ao executar o serviço", e);
     }

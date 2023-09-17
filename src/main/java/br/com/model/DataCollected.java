@@ -9,6 +9,13 @@ public class DataCollected {
         this.memory = memory;
     }
 
+    public long getOverHead() {
+        return overHead;
+    }
+
+    public void setOverHead(long overHead) {
+        this.overHead = overHead;
+    }
     public double getSpeedup() {
         return speedup;
     }
@@ -40,11 +47,20 @@ public class DataCollected {
     public void setSingleThread(boolean singleThread) {
         isSingleThread = singleThread;
     }
+    public long getIdleThreadTimeMedian() {
+        return idleThreadTimeMedian;
+    }
+
+    public void setIdleThreadTimeMedian(long idleThreadTimeMedian) {
+        this.idleThreadTimeMedian = idleThreadTimeMedian;
+    }
     private long memory = 0;
     private double speedup = 0;
     private double efficiency = 0;
     private long executionTime = 0;
 
+    private long overHead = 0;
 
+    private long idleThreadTimeMedian = 0;
     private boolean isSingleThread = false;
 }
