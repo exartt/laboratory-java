@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuteService implements IExecuteService {
-  private static final String filePath = "C:\\Users\\leo_m\\OneDrive\\Documentos\\RunProject\\Software_Professional_Salaries.csv";
+  private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
   private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(1);
@@ -44,7 +44,7 @@ public class ExecuteService implements IExecuteService {
         bucketExecutor.submit(() -> {
           long startTime = System.currentTimeMillis();
           try {
-            long initialMemory = getMemoryNow();
+            long initialMemory = this.getMemoryNow();
             List<ProfessionalSalary> professionalSalaries = fileService.read(tempFile.toString());
             memoryUsed.add(this.getMemoryUsed(initialMemory));
             for (ProfessionalSalary professionalSalary : professionalSalaries) {

@@ -9,21 +9,29 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class PersistData implements IPersist {
-    private static final String INSERT_SQL = "INSERT INTO j_data (m_memory, m_speed_up, m_efficiency, m_execution_time, m_is_single_thread, m_overhead, m_iddle_thread) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO j_data (m_memory, m_speed_up, m_efficiency, m_execution_time, m_overhead, m_iddle_thread) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_SQL_OT = "INSERT INTO j_data_ot (m_memory, m_execution_time, m_iddle_thread) VALUES (?, ?, ?)";
 
     public void insert(DataCollected dataCollected) {
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(INSERT_SQL)) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String insertSql = dataCollected.isSingleThread() ? INSERT_SQL_OT : INSERT_SQL;
 
-            stmt.setLong(1, dataCollected.getMemory());
-            stmt.setDouble(2, dataCollected.getSpeedup());
-            stmt.setDouble(3, dataCollected.getEfficiency());
-            stmt.setLong(4, dataCollected.getExecutionTime());
-            stmt.setBoolean(5, dataCollected.isSingleThread());
-            stmt.setLong(6, dataCollected.getOverHead());
-            stmt.setDouble(7, dataCollected.getIdleThreadTimeMedian());
+            try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+                stmt.setLong(1, dataCollected.getMemory());
 
-            stmt.executeUpdate();
+                if (dataCollected.isSingleThread()) {
+                    stmt.setLong(2, dataCollected.getExecutionTime());
+                    stmt.setDouble(3, dataCollected.getIdleThreadTimeMedian());
+                } else {
+                    stmt.setDouble(2, dataCollected.getSpeedup());
+                    stmt.setDouble(3, dataCollected.getEfficiency());
+                    stmt.setLong(4, dataCollected.getExecutionTime());
+                    stmt.setLong(5, dataCollected.getOverHead());
+                    stmt.setDouble(6, dataCollected.getIdleThreadTimeMedian());
+                }
+
+                stmt.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

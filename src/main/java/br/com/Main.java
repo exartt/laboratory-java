@@ -17,7 +17,7 @@ public class Main {
 
         executeService.execute();
 
-        for (int controle = 0; controle < 100; controle++) {
+        for (int controle = 0; controle < 100000; controle++) {
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
@@ -25,5 +25,7 @@ public class Main {
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.getIdleTimes());
             LaboratoryUtils.persistData(executionTime, memoryResult, idleThreadTime, true);
         }
+
+        System.exit(200);
     }
 }

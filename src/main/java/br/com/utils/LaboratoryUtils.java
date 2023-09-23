@@ -3,15 +3,13 @@ package br.com.utils;
 import br.com.model.DataCollected;
 import br.com.service.PersistData;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
 public class LaboratoryUtils {
     private static final long sequentialExecutionTime = 270;
-    private static final int thread_used = 10;
+    private static final int thread_used = 1;
     public static long getMedianMemory(List<Long> memoryUsedList) {
         BigInteger ret = new BigInteger("0");
 
@@ -47,8 +45,7 @@ public class LaboratoryUtils {
     }
 
     private static double getSpeedup(long parallelExecutionTime) {
-        BigDecimal speedUp = new BigDecimal(sequentialExecutionTime);
-        return speedUp.divide(BigDecimal.valueOf(parallelExecutionTime), 2, RoundingMode.HALF_UP).doubleValue();
+        return (double) sequentialExecutionTime / parallelExecutionTime;
     }
 
     private static double getEfficiency(double speedUp) {
