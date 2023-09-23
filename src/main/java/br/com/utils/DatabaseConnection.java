@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class DatabaseConnection {
     public static Connection getConnection() throws SQLException {
-        String configFilePath = "src/main/resources/config.yml";
+        String configFilePath = "/home/opc/laboratory-java/src/main/resources/config.yml";
 
         try (FileInputStream input = new FileInputStream(configFilePath)) {
             Yaml yaml = new Yaml();
