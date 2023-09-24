@@ -1,4 +1,4 @@
-package br.com.utils;
+package jar .utils;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvBuilder;
@@ -23,7 +23,8 @@ public class DatabaseConnection {
     }
 
     private static Dotenv load() {
-        String envFilePath = "/home/opc/laboratory-java/src/main/resources/.env";
+//        String envFilePath = "/home/opc/laboratory-java/src/main/resources/.env";
+        String envFilePath = "src/main/resources/.env";
 
         return new DotenvBuilder()
                 .filename(envFilePath)
