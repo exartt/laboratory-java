@@ -18,6 +18,8 @@ public class DatabaseConnection {
         config.setUsername(USER);
         config.setPassword(PASSWORD);
 
+        config.setMaximumPoolSize(9);
+
         dataSource = new HikariDataSource(config);
     }
 
