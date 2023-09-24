@@ -1,31 +1,32 @@
 package br.com.utils;
 
-import org.yaml.snakeyaml.Yaml;
+import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvBuilder;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
 
 public class DatabaseConnection {
     public static Connection getConnection() throws SQLException {
-        String configFilePath = "/home/opc/laboratory-java/src/main/resources/config.yml";
+        Dotenv dotenv = load();
 
-        try (FileInputStream input = new FileInputStream(configFilePath)) {
-            Yaml yaml = new Yaml();
-            Map<String, Object> config = yaml.load(input);
-            Map<String, String> databaseConfig = (Map<String, String>) config.get("database");
+        String url = dotenv.get("DB_URL");
+        String user = dotenv.get("DB_USER");
+        String password = dotenv.get("DB_PASSWORD");
 
-            String url = databaseConfig.get("url");
-            String user = databaseConfig.get("user");
-            String password = databaseConfig.get("password");
-
+        try {
             return DriverManager.getConnection(url, user, password);
-        } catch (IOException e) {
-            throw new SQLException("Erro ao ler configurações do banco de dados.", e);
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao conectar ao banco de dados.", e);
         }
+    }
+
+    private static Dotenv load() {
+        String envFilePath = "/home/opc/laboratory-java/src/main/resources/.env";
+
+        return new DotenvBuilder()
+                .filename(envFilePath)
+                .load();
     }
 }
