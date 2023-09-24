@@ -1,33 +1,15 @@
-package jar .utils;
-
-import io.github.cdimascio.dotenv.Dotenv;
-import io.github.cdimascio.dotenv.DotenvBuilder;
+package br.com.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
+    private static final String URL = "jdbc:postgresql://babar.db.elephantsql.com:5432/ysetqhyu";
+    private static final String USER = "ysetqhyu";
+    private static final String PASSWORD = "7eQOGqqkFp3HH3Fy0-32Zt_Z04f5Pg46";
+
     public static Connection getConnection() throws SQLException {
-        Dotenv dotenv = load();
-
-        String url = dotenv.get("DB_URL");
-        String user = dotenv.get("DB_USER");
-        String password = dotenv.get("DB_PASSWORD");
-
-        try {
-            return DriverManager.getConnection(url, user, password);
-        } catch (SQLException e) {
-            throw new SQLException("Erro ao conectar ao banco de dados.", e);
-        }
-    }
-
-    private static Dotenv load() {
-//        String envFilePath = "/home/opc/laboratory-java/src/main/resources/.env";
-        String envFilePath = "src/main/resources/.env";
-
-        return new DotenvBuilder()
-                .filename(envFilePath)
-                .load();
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
