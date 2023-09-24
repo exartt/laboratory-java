@@ -18,12 +18,14 @@ public class Main {
         executeService.execute();
 
         for (int controle = 0; controle < 100000; controle++) {
+            System.out.println("Initiating capture number: " + controle);
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
             long memoryResult = LaboratoryUtils.getMedianMemory(result.getMemoryUsed());
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.getIdleTimes());
             LaboratoryUtils.persistData(executionTime, memoryResult, idleThreadTime, true);
+            System.out.println("capture nº " + controle + " collected successfully");
         }
 
         System.exit(200);

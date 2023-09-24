@@ -24,8 +24,6 @@ public class ExecuteService implements IExecuteService {
   private final IFileService fileService;
   private final IMappingService mappingService;
   private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(1);
-  private final Map<Thread, Long> idleTimes = new ConcurrentHashMap<>();
-  private final AtomicInteger idleCount = new AtomicInteger(0);
 
   public ExecuteService(IFileService fileService, IMappingService mappingService) {
     this.fileService = fileService;
@@ -39,6 +37,9 @@ public class ExecuteService implements IExecuteService {
       CountDownLatch latch = new CountDownLatch(tempFiles.size());
       List<Path> processedFiles = Collections.synchronizedList(new ArrayList<>());
       List<Long> memoryUsed = Collections.synchronizedList(new ArrayList<>());
+
+      Map<Thread, Long> idleTimes = new ConcurrentHashMap<>();
+      AtomicInteger idleCount = new AtomicInteger(0);
 
       for (Path tempFile : tempFiles) {
         bucketExecutor.submit(() -> {
