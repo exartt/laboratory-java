@@ -5,6 +5,7 @@ import br.com.adapters.IMappingService;
 import br.com.adapters.IFileService;
 import br.com.model.ExecutionResult;
 import br.com.model.ProfessionalSalary;
+import br.com.utils.LaboratoryUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +24,7 @@ public class ExecuteService implements IExecuteService {
   private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
-  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(20);
+  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(LaboratoryUtils.thread_used);
 
   public ExecuteService(IFileService fileService, IMappingService mappingService) {
     this.fileService = fileService;
