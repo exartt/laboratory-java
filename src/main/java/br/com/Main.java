@@ -17,7 +17,7 @@ public class Main {
 
         executeService.execute();
 
-        for (int controle = 0; controle < 100000; controle++) {
+        for (int controle = 0; controle < 48325; controle++) {
             System.out.println("Initiating capture number: " + controle);
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
