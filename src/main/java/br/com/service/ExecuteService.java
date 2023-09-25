@@ -21,7 +21,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuteService implements IExecuteService {
-  private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
+  private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
+//  private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
   private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(LaboratoryUtils.thread_used);
@@ -42,6 +43,7 @@ public class ExecuteService implements IExecuteService {
       Map<Thread, Long> idleTimes = new ConcurrentHashMap<>();
       AtomicInteger idleCount = new AtomicInteger(0);
 
+      long currentTimeMillis = System.currentTimeMillis();
       for (Path tempFile : tempFiles) {
         bucketExecutor.submit(() -> {
           long startTime = System.currentTimeMillis();
@@ -79,10 +81,11 @@ public class ExecuteService implements IExecuteService {
       }
 
       latch.await();
+      long executionTime = System.currentTimeMillis() - currentTimeMillis;
 
       processedFiles.forEach(this::deleteFile);
 
-      return new ExecutionResult(memoryUsed, idleTimes);
+      return new ExecutionResult(memoryUsed, idleTimes, executionTime);
     } catch (Exception e) {
       throw new RuntimeException("Erro ao executar o serviço", e);
     }

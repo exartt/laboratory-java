@@ -63,4 +63,13 @@ public class DataCollected {
 
     private long idleThreadTimeMedian = 0;
     private boolean isSingleThread = false;
+    private long fullExecutionTime = 0;
+
+    public long getFullExecutionTime() {
+        return fullExecutionTime;
+    }
+
+    public void setFullExecutionTime(long fullExecutionTime) {
+        this.fullExecutionTime = fullExecutionTime;
+    }
 }

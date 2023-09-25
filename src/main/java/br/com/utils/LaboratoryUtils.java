@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class LaboratoryUtils {
     private static final double sequentialExecutionTime = 191.06;
-    public static final int thread_used = 22;
+    public static final int thread_used = 10;
     public static long getMedianMemory(List<Long> memoryUsedList) {
         BigInteger ret = new BigInteger("0");
 
@@ -24,7 +24,7 @@ public class LaboratoryUtils {
         return ret.longValueExact();
     }
 
-    public static void persistData (long executionTime, long memoryUsedMedian, long idleThreadTimeMedian , boolean isSingleThread) {
+    public static void persistData (long executionTime, long memoryUsedMedian, long idleThreadTimeMedian , boolean isSingleThread, long fullExecutionTime) {
         DataCollected dataCollected = new DataCollected();
 
         dataCollected.setExecutionTime(executionTime);
@@ -39,6 +39,7 @@ public class LaboratoryUtils {
             dataCollected.setEfficiency(efficiency);
             dataCollected.setOverHead(overHead);
         }
+        dataCollected.setFullExecutionTime(fullExecutionTime);
         dataCollected.setIdleThreadTimeMedian(idleThreadTimeMedian);
         PersistData persistData = new PersistData();
         persistData.insert(dataCollected);
