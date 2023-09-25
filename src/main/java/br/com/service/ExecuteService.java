@@ -21,8 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuteService implements IExecuteService {
-  private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
-//  private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
+  private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
   private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(LaboratoryUtils.thread_used);
