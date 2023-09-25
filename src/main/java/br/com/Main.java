@@ -17,14 +17,14 @@ public class Main {
 
         executeService.execute();
 
-        for (int controle = 0; controle < 48325; controle++) {
+        for (int controle = 0; controle < 50000; controle++) {
             System.out.println("Initiating capture number: " + controle);
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
             long memoryResult = LaboratoryUtils.getMedianMemory(result.getMemoryUsed());
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.getIdleTimes());
-            LaboratoryUtils.persistData(executionTime, memoryResult, idleThreadTime, true);
+            LaboratoryUtils.persistData(executionTime, memoryResult, idleThreadTime, false);
             System.out.println("capture nº " + controle + " collected successfully");
         }
 

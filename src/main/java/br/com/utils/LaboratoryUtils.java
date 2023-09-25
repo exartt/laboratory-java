@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class LaboratoryUtils {
-    private static final long sequentialExecutionTime = 270;
-    private static final int thread_used = 1;
+    private static final double sequentialExecutionTime = 191.06;
+    private static final int thread_used = 10;
     public static long getMedianMemory(List<Long> memoryUsedList) {
         BigInteger ret = new BigInteger("0");
 
@@ -34,7 +34,7 @@ public class LaboratoryUtils {
         if (!isSingleThread) {
             double speedUp = getSpeedup(executionTime);
             double efficiency = getEfficiency(speedUp);
-            long overHead = getOverhead(executionTime);
+            double overHead = getOverhead(executionTime);
             dataCollected.setSpeedup(speedUp);
             dataCollected.setEfficiency(efficiency);
             dataCollected.setOverHead(overHead);
@@ -45,14 +45,14 @@ public class LaboratoryUtils {
     }
 
     private static double getSpeedup(long parallelExecutionTime) {
-        return (double) sequentialExecutionTime / parallelExecutionTime;
+        return sequentialExecutionTime / parallelExecutionTime;
     }
 
     private static double getEfficiency(double speedUp) {
         return speedUp / thread_used;
     }
 
-    private static long getOverhead (long parallelExecutionTime) {
+    private static double getOverhead (long parallelExecutionTime) {
         return sequentialExecutionTime - parallelExecutionTime;
     }
 

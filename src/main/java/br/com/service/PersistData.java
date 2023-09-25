@@ -26,7 +26,7 @@ public class PersistData implements IPersist {
                     stmt.setDouble(2, dataCollected.getSpeedup());
                     stmt.setDouble(3, dataCollected.getEfficiency());
                     stmt.setLong(4, dataCollected.getExecutionTime());
-                    stmt.setLong(5, dataCollected.getOverHead());
+                    stmt.setDouble(5, dataCollected.getOverHead());
                     stmt.setDouble(6, dataCollected.getIdleThreadTimeMedian());
                 }
 

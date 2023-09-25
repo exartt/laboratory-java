@@ -9,11 +9,11 @@ public class DataCollected {
         this.memory = memory;
     }
 
-    public long getOverHead() {
+    public double getOverHead() {
         return overHead;
     }
 
-    public void setOverHead(long overHead) {
+    public void setOverHead(double overHead) {
         this.overHead = overHead;
     }
     public double getSpeedup() {
@@ -59,7 +59,7 @@ public class DataCollected {
     private double efficiency = 0;
     private long executionTime = 0;
 
-    private long overHead = 0;
+    private double overHead = 0;
 
     private long idleThreadTimeMedian = 0;
     private boolean isSingleThread = false;
