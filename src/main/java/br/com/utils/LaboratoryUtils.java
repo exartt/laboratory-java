@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class LaboratoryUtils {
-    private static final double sequentialExecutionTime = 191.06;
-    public static final int thread_used = 1;
+    private static final double sequentialExecutionTime = 71.62;
+    public static final int thread_used = 10;
     public static long getMedianMemory(List<Long> memoryUsedList) {
         BigInteger ret = new BigInteger("0");
 
