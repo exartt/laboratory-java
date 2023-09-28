@@ -24,7 +24,7 @@ public class Main {
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
             long memoryResult = LaboratoryUtils.getMedianMemory(result.getMemoryUsed());
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.getIdleTimes());
-            LaboratoryUtils.persistData(result.getExecutionTime(), memoryResult, idleThreadTime, true, executionTime);
+            LaboratoryUtils.persistData(result.getExecutionTime(), memoryResult, idleThreadTime, false, executionTime);
             System.out.println("capture nº " + controle + " collected successfully");
         }
 
