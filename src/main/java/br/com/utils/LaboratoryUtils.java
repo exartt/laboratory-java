@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class LaboratoryUtils {
     private static double sequentialExecutionTime = 0;
-    public static final int thread_used = 10;
+    public static int thread_used = 1;
     public static long getMedianMemory(List<Long> memoryUsedList) {
         BigInteger ret = new BigInteger("0");
 

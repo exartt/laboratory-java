@@ -22,22 +22,23 @@ public class Main {
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
-            long memoryResult = LaboratoryUtils.getMedianMemory(result.getMemoryUsed());
-            long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.getIdleTimes());
-            LaboratoryUtils.persistData(result.getExecutionTime(), memoryResult, idleThreadTime, true, executionTime);
+            long memoryResult = LaboratoryUtils.getMedianMemory(result.memoryUsed());
+            long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
+            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, true, executionTime);
             System.out.println("capture singleThread nº " + controle + " collected successfully");
         }
 
         LaboratoryUtils.calculateMed();
+        LaboratoryUtils.thread_used = 10;
 
         for (int controle = 0; controle < 100000; controle++) {
             System.out.println("Initiating multiThread capture number: " + controle);
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
-            long memoryResult = LaboratoryUtils.getMedianMemory(result.getMemoryUsed());
-            long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.getIdleTimes());
-            LaboratoryUtils.persistData(result.getExecutionTime(), memoryResult, idleThreadTime, false, executionTime);
+            long memoryResult = LaboratoryUtils.getMedianMemory(result.memoryUsed());
+            long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
+            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, false, executionTime);
             System.out.println("capture multiThread nº " + controle + " collected successfully");
         }
 
