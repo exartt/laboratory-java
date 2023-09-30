@@ -7,9 +7,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:postgresql://babar.db.elephantsql.com:5432/ysetqhyu";
-    private static final String USER = "ysetqhyu";
-    private static final String PASSWORD = "7eQOGqqkFp3HH3Fy0-32Zt_Z04f5Pg46";
+    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "";
     private static final HikariDataSource dataSource;
 
     static {

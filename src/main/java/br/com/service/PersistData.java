@@ -6,6 +6,7 @@ import br.com.utils.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,5 +40,23 @@ public class PersistData implements IPersist {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public double getAverageExecutionTime() {
+        String query = "SELECT AVG(m_execution_time) FROM j_data_ot";
+        double averageExecutionTime = 0.0;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                averageExecutionTime = rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return averageExecutionTime;
     }
 }

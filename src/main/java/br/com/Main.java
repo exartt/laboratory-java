@@ -17,15 +17,28 @@ public class Main {
 
         executeService.execute();
 
-        for (int controle = 0; controle < 8365; controle++) {
-            System.out.println("Initiating capture number: " + controle);
+        for (int controle = 0; controle < 100000; controle++) {
+            System.out.println("Initiating singleThread capture number: " + controle);
+            long currentTimeMillis = System.currentTimeMillis();
+            ExecutionResult result = executeService.execute();
+            long executionTime = System.currentTimeMillis() - currentTimeMillis;
+            long memoryResult = LaboratoryUtils.getMedianMemory(result.getMemoryUsed());
+            long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.getIdleTimes());
+            LaboratoryUtils.persistData(result.getExecutionTime(), memoryResult, idleThreadTime, true, executionTime);
+            System.out.println("capture singleThread nº " + controle + " collected successfully");
+        }
+
+        LaboratoryUtils.calculateMed();
+
+        for (int controle = 0; controle < 100000; controle++) {
+            System.out.println("Initiating multiThread capture number: " + controle);
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
             long memoryResult = LaboratoryUtils.getMedianMemory(result.getMemoryUsed());
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.getIdleTimes());
             LaboratoryUtils.persistData(result.getExecutionTime(), memoryResult, idleThreadTime, false, executionTime);
-            System.out.println("capture nº " + controle + " collected successfully");
+            System.out.println("capture multiThread nº " + controle + " collected successfully");
         }
 
         System.exit(200);
