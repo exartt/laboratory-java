@@ -1,6 +1,8 @@
 package br.com.utils;
 
 import br.com.model.DataCollected;
+import br.com.model.ExecutionResult;
+import br.com.service.ExecuteService;
 import br.com.service.PersistData;
 
 import java.math.BigInteger;
@@ -90,6 +92,18 @@ public class LaboratoryUtils {
 
     public static void setSequentialExecutionTime(double setSequencial) {
         sequentialExecutionTime = setSequencial;
+    }
+    public static void executeAndCollectData(ExecuteService executeService, String threadType, int numIterations) {
+        for (int controle = 0; controle < numIterations; controle++) {
+            System.out.println("Initiating " + threadType + " capture number: " + controle);
+            long currentTimeMillis = System.currentTimeMillis();
+            ExecutionResult result = executeService.execute();
+            long executionTime = System.currentTimeMillis() - currentTimeMillis;
+            long memoryResult = LaboratoryUtils.getMedianMemory(result.memoryUsed());
+            long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
+            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime);
+            System.out.println("capture " + threadType + " nº " + controle + " collected successfully");
+        }
     }
 }
 

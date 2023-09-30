@@ -2,48 +2,28 @@ package br.com;
 
 import br.com.adapters.IMappingService;
 import br.com.adapters.IFileService;
-import br.com.model.ExecutionResult;
 import br.com.service.ExecuteService;
 import br.com.service.MappingService;
 import br.com.service.FileService;
 import br.com.utils.LaboratoryUtils;
 
+import static br.com.utils.LaboratoryUtils.executeAndCollectData;
+
 public class Main {
     public static void main(String[] args) {
+        // Configuração de serviços
         IMappingService mappingService = new MappingService();
         IFileService readerService = new FileService();
-
         ExecuteService executeService = new ExecuteService(readerService, mappingService);
 
-        executeService.execute();
-
-        for (int controle = 0; controle < 100000; controle++) {
-            System.out.println("Initiating singleThread capture number: " + controle);
-            long currentTimeMillis = System.currentTimeMillis();
-            ExecutionResult result = executeService.execute();
-            long executionTime = System.currentTimeMillis() - currentTimeMillis;
-            long memoryResult = LaboratoryUtils.getMedianMemory(result.memoryUsed());
-            long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
-            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, true, executionTime);
-            System.out.println("capture singleThread nº " + controle + " collected successfully");
-        }
+        executeAndCollectData(executeService, "singleThread", 10);
 
         LaboratoryUtils.setSequentialExecutionTime();
         LaboratoryUtils.setUsedThread(10);
-
         LaboratoryUtils.insertData();
 
-        for (int controle = 0; controle < 100000; controle++) {
-            System.out.println("Initiating multiThread capture number: " + controle);
-            long currentTimeMillis = System.currentTimeMillis();
-            ExecutionResult result = executeService.execute();
-            long executionTime = System.currentTimeMillis() - currentTimeMillis;
-            long memoryResult = LaboratoryUtils.getMedianMemory(result.memoryUsed());
-            long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
-            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, false, executionTime);
-            System.out.println("capture multiThread nº " + controle + " collected successfully");
-        }
+        executeAndCollectData(executeService, "multiThread", 10);
 
-        System.exit(200);
+        System.exit(0);
     }
 }
