@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class LaboratoryUtils {
     private static double sequentialExecutionTime = 0;
-    public static int thread_used = 1;
+    private static int usedThread = 1;
     public static long getMedianMemory(List<Long> memoryUsedList) {
         BigInteger ret = new BigInteger("0");
 
@@ -46,15 +46,15 @@ public class LaboratoryUtils {
     }
 
     private static double getSpeedup(long parallelExecutionTime) {
-        return sequentialExecutionTime / parallelExecutionTime;
+        return getSequentialExecutionTime() / parallelExecutionTime;
     }
 
     private static double getEfficiency(double speedUp) {
-        return speedUp / thread_used;
+        return speedUp / getUsedThread();
     }
 
     private static double getOverhead (long parallelExecutionTime) {
-        return sequentialExecutionTime - parallelExecutionTime;
+        return getSequentialExecutionTime() - parallelExecutionTime;
     }
 
     public static long calculateAverageIdleTimeInMilliseconds(Map<Thread, Long> idleTimes) {
@@ -68,9 +68,28 @@ public class LaboratoryUtils {
         return totalIdleTime / totalIdleThreads;
     }
 
-    public static void calculateMed () {
-        sequentialExecutionTime = new PersistData().getAverageExecutionTime();
-        System.out.println(sequentialExecutionTime);
+    public static void setSequentialExecutionTime () {
+        setSequentialExecutionTime(new PersistData().getAverageExecutionTime());
+    }
+
+    public static void insertData () {
+        PersistData.insertData();
+    }
+
+    public static int getUsedThread() {
+        return usedThread;
+    }
+
+    public static void setUsedThread(int usedThread) {
+        LaboratoryUtils.usedThread = usedThread;
+    }
+
+    public static double getSequentialExecutionTime() {
+        return sequentialExecutionTime;
+    }
+
+    public static void setSequentialExecutionTime(double sequentialExecutionTime) {
+        LaboratoryUtils.sequentialExecutionTime = sequentialExecutionTime;
     }
 }
 

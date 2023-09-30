@@ -24,7 +24,7 @@ public class ExecuteService implements IExecuteService {
   private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
-  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(LaboratoryUtils.thread_used);
+  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(LaboratoryUtils.getUsedThread());
 
   public ExecuteService(IFileService fileService, IMappingService mappingService) {
     this.fileService = fileService;

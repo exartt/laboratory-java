@@ -28,8 +28,10 @@ public class Main {
             System.out.println("capture singleThread nº " + controle + " collected successfully");
         }
 
-        LaboratoryUtils.calculateMed();
-        LaboratoryUtils.thread_used = 10;
+        LaboratoryUtils.setSequentialExecutionTime();
+        LaboratoryUtils.setUsedThread(10);
+
+        LaboratoryUtils.insertData();
 
         for (int controle = 0; controle < 100000; controle++) {
             System.out.println("Initiating multiThread capture number: " + controle);
