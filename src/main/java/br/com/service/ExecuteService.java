@@ -24,7 +24,6 @@ public class ExecuteService implements IExecuteService {
   private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
-  private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(LaboratoryUtils.getUsedThread());
 
   public ExecuteService(IFileService fileService, IMappingService mappingService) {
     this.fileService = fileService;
@@ -34,10 +33,14 @@ public class ExecuteService implements IExecuteService {
   @Override
   public ExecutionResult execute() {
     try {
+      ExecutorService bucketExecutor = Executors.newFixedThreadPool(LaboratoryUtils.getUsedThread());
       List<Path> tempFiles = fileService.createBuckets(Paths.get(filePath));
       CountDownLatch latch = new CountDownLatch(tempFiles.size());
       List<Path> processedFiles = Collections.synchronizedList(new ArrayList<>());
       List<Long> memoryUsed = Collections.synchronizedList(new ArrayList<>());
+
+      System.out.println("using: " + LaboratoryUtils.getUsedThread());
+      System.out.println("time: " + LaboratoryUtils.getSequentialExecutionTime());
 
       Map<Thread, Long> idleTimes = new ConcurrentHashMap<>();
       AtomicInteger idleCount = new AtomicInteger(0);

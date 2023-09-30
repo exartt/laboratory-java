@@ -80,16 +80,16 @@ public class LaboratoryUtils {
         return usedThread;
     }
 
-    public static void setUsedThread(int usedThread) {
-        LaboratoryUtils.usedThread = usedThread;
+    public static void setUsedThread(int setThread) {
+        usedThread = setThread;
     }
 
     public static double getSequentialExecutionTime() {
         return sequentialExecutionTime;
     }
 
-    public static void setSequentialExecutionTime(double sequentialExecutionTime) {
-        LaboratoryUtils.sequentialExecutionTime = sequentialExecutionTime;
+    public static void setSequentialExecutionTime(double setSequencial) {
+        sequentialExecutionTime = setSequencial;
     }
 }
 
