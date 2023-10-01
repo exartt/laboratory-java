@@ -15,14 +15,17 @@ public class Main {
         IMappingService mappingService = new MappingService();
         IFileService readerService = new FileService();
         ExecuteService executeService = new ExecuteService(readerService, mappingService);
+        int repeatNum = 100000;
 
-        executeAndCollectData(executeService, "singleThread", 10);
+        executeAndCollectData(executeService, "singleThread", repeatNum);
 
         LaboratoryUtils.setSequentialExecutionTime();
         LaboratoryUtils.setUsedThread(10);
         LaboratoryUtils.insertData();
 
-        executeAndCollectData(executeService, "multiThread", 10);
+        executeService = new ExecuteService(readerService, mappingService);
+
+        executeAndCollectData(executeService, "multiThread", repeatNum);
 
         System.exit(0);
     }
