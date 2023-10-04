@@ -77,10 +77,10 @@ public class FileService implements IFileService {
         Path tempFile = Files.createTempFile("bucket_result_", System.currentTimeMillis() + ".csv");
 
         try (BufferedWriter writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8)) {
-            writer.write("Rating,CompanyName,JobTitle,Salary,Reports,Location\n");
+            writer.write("Rating;CompanyName;JobTitle;Salary;Reports;Location\n");
 
             for (ProfessionalSalary salary : professionalSalaries) {
-                writer.write(String.format("%f,%s,%d,%f,%d,%d\n",
+                writer.write(String.format("%f;%s;%d;%f;%d;%d\n",
                         salary.getRating(),
                         salary.getCompanyName(),
                         Integer.valueOf(salary.getJobTitle()),

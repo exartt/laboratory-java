@@ -26,11 +26,13 @@ public class LaboratoryUtils {
         return ret.longValueExact();
     }
 
-    public static void persistData (long executionTime, long memoryUsedMedian, long idleThreadTimeMedian , boolean isSingleThread, long fullExecutionTime) {
+    public static void persistData (long executionTime, long memoryUsedMedian, long idleThreadTimeMedian , boolean isSingleThread, long fullExecutionTime, long memoryUsedMedianR, long memoryUsedMedianW) {
         DataCollected dataCollected = new DataCollected();
 
         dataCollected.setExecutionTime(executionTime);
         dataCollected.setMemory(memoryUsedMedian);
+        dataCollected.setMemoryR(memoryUsedMedianR);
+        dataCollected.setMemoryW(memoryUsedMedianW);
         dataCollected.setSingleThread(isSingleThread);
 
         if (!isSingleThread) {
@@ -99,9 +101,12 @@ public class LaboratoryUtils {
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
+            result.memoryUsed().addAll(result.memoryUsedR()); // we use the same initialMem to collect the memoryusedR, it validates the collect.
             long memoryResult = LaboratoryUtils.getMedianMemory(result.memoryUsed());
+            long memoryResultW = LaboratoryUtils.getMedianMemory(result.memoryUsedW());
+            long memoryResultR = LaboratoryUtils.getMedianMemory(result.memoryUsedR());
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
-            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime);
+            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime, memoryResultR, memoryResultW);
             System.out.println("capture " + threadType + " nº " + controle + " collected successfully");
         }
     }

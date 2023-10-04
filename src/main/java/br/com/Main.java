@@ -14,18 +14,19 @@ public class Main {
         // Configuração de serviços
         IMappingService mappingService = new MappingService();
         IFileService readerService = new FileService();
-        ExecuteService executeService = new ExecuteService(readerService, mappingService);
-        int repeatNum = 100000;
+        int repeatNum = 10000;
 
-        executeAndCollectData(executeService, "singleThread", repeatNum);
-
-        LaboratoryUtils.setSequentialExecutionTime();
-        LaboratoryUtils.setUsedThread(10);
-        LaboratoryUtils.insertData();
-
-        executeService = new ExecuteService(readerService, mappingService);
-
-        executeAndCollectData(executeService, "multiThread", repeatNum);
+        for (int i = 1; i <= 10; i++) {
+            String type = "singleThread";
+            if (i > 1) {
+                LaboratoryUtils.setSequentialExecutionTime();
+                type = "multiThread";
+            }
+            LaboratoryUtils.setUsedThread(i);
+            LaboratoryUtils.insertData();
+            ExecuteService executeService = new ExecuteService(readerService, mappingService);
+            executeAndCollectData(executeService, type, repeatNum);
+        }
 
         System.exit(0);
     }

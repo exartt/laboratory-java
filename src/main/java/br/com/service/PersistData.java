@@ -3,6 +3,7 @@ package br.com.service;
 import br.com.adapters.IPersist;
 import br.com.model.DataCollected;
 import br.com.utils.DatabaseConnection;
+import br.com.utils.LaboratoryUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,8 +15,8 @@ import static br.com.utils.LaboratoryUtils.getSequentialExecutionTime;
 import static br.com.utils.LaboratoryUtils.getUsedThread;
 
 public class PersistData implements IPersist {
-    private static final String INSERT_SQL = "INSERT INTO j_data (m_memory, m_speed_up, m_efficiency, m_execution_time, m_overhead, m_iddle_thread, m_full_execution_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String INSERT_SQL_OT = "INSERT INTO j_data_ot (m_memory, m_execution_time, m_iddle_thread, m_full_execution_time) VALUES (?, ?, ?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO j_data (m_thread, m_memory, m_memory_r, m_memory_w,  m_speed_up, m_efficiency, m_execution_time, m_overhead, m_iddle_thread, m_full_execution_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_SQL_OT = "INSERT INTO j_data_ot (m_thread, m_memory, m_memory_r, m_memory_w, m_execution_time, m_iddle_thread, m_full_execution_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String INSERT_RECORD_PARAM = "INSERT INTO record_params (r_sequential_time, r_max_threads, r_lang) VALUES (?, ?, ?)";
     public void insert(DataCollected dataCollected) {
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -23,7 +24,10 @@ public class PersistData implements IPersist {
 
             try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
                 AtomicInteger count = new AtomicInteger(1);
+                stmt.setLong(count.getAndIncrement(), LaboratoryUtils.getUsedThread());
                 stmt.setLong(count.getAndIncrement(), dataCollected.getMemory());
+                stmt.setLong(count.getAndIncrement(), dataCollected.getMemoryR());
+                stmt.setLong(count.getAndIncrement(), dataCollected.getMemoryW());
 
                 if (dataCollected.isSingleThread()) {
                     stmt.setLong(count.getAndIncrement(), dataCollected.getExecutionTime());
