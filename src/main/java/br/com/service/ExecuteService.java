@@ -5,6 +5,7 @@ import br.com.adapters.IMappingService;
 import br.com.adapters.IFileService;
 import br.com.model.ExecutionResult;
 import br.com.model.ProfessionalSalary;
+import br.com.utils.LaboratoryUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -89,7 +90,9 @@ public class ExecuteService implements IExecuteService {
       latch.await();
       long executionTime = System.currentTimeMillis() - currentTimeMillis;
 
-//      processedFiles.forEach(this::deleteFile);
+      if (LaboratoryUtils.getUsedThread() < 6) {
+        processedFiles.forEach(this::deleteFile);
+      }
       return new ExecutionResult(memoryUsed, memoryUsedR, memoryUsedW, idleTimes, executionTime);
     } catch (Exception e) {
       throw new RuntimeException("Erro ao executar o serviço", e);
