@@ -97,7 +97,7 @@ public class LaboratoryUtils {
     }
     public static void executeAndCollectData(ExecuteService executeService, String threadType, int numIterations) {
         for (int controle = 0; controle < numIterations; controle++) {
-            System.out.println("Initiating " + threadType + " capture number: " + controle);
+//            System.out.println("Initiating " + threadType + " capture number: " + controle);
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
@@ -106,8 +106,9 @@ public class LaboratoryUtils {
             long memoryResultW = LaboratoryUtils.getMedianMemory(result.memoryUsedW());
             long memoryResultR = LaboratoryUtils.getMedianMemory(result.memoryUsedR());
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
-            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime, memoryResultR, memoryResultW);
-            System.out.println("capture " + threadType + " nº " + controle + " collected successfully");
+            System.out.println("run my baby run " + result.executionTime());
+//            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime, memoryResultR, memoryResultW);
+//            System.out.println("capture " + threadType + " nº " + controle + " collected successfully");
         }
     }
 }

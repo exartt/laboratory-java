@@ -11,12 +11,11 @@ import static br.com.utils.LaboratoryUtils.executeAndCollectData;
 
 public class Main {
     public static void main(String[] args) {
-        // Configuração de serviços
         IMappingService mappingService = new MappingService();
         IFileService readerService = new FileService();
-        int repeatNum = 10000;
+        int repeatNum = 1;
 
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 10; i <= 10; i++) {
             String type = "singleThread";
             if (i > 1) {
                 LaboratoryUtils.setSequentialExecutionTime();

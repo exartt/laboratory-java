@@ -5,7 +5,6 @@ import br.com.adapters.IMappingService;
 import br.com.adapters.IFileService;
 import br.com.model.ExecutionResult;
 import br.com.model.ProfessionalSalary;
-import br.com.utils.LaboratoryUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static br.com.utils.LaboratoryUtils.getUsedThread;
 
@@ -91,7 +89,7 @@ public class ExecuteService implements IExecuteService {
       latch.await();
       long executionTime = System.currentTimeMillis() - currentTimeMillis;
 
-      processedFiles.forEach(this::deleteFile);
+//      processedFiles.forEach(this::deleteFile);
       return new ExecutionResult(memoryUsed, memoryUsedR, memoryUsedW, idleTimes, executionTime);
     } catch (Exception e) {
       throw new RuntimeException("Erro ao executar o serviço", e);
