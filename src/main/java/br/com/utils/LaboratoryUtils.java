@@ -7,32 +7,31 @@ import br.com.service.PersistData;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
 
 public class LaboratoryUtils {
     private static double sequentialExecutionTime = 0;
     private static int usedThread = 1;
-    public static long getMedianMemory(List<Long> memoryUsedList) {
+    public static long getArithmeticMean(List<Long> numbers) {
         BigInteger ret = new BigInteger("0");
 
-        for (Long memUsed : memoryUsedList) {
-            ret = ret.add(BigInteger.valueOf(memUsed));
+        for (Long num : numbers) {
+            ret = ret.add(BigInteger.valueOf(num));
         }
 
-        BigInteger size = BigInteger.valueOf(memoryUsedList.size());
+        BigInteger size = BigInteger.valueOf(numbers.size());
 
         ret = ret.divide(size);
 
         return ret.longValueExact();
     }
 
-    public static void persistData (long executionTime, long memoryUsedMedian, long idleThreadTimeMedian , boolean isSingleThread, long fullExecutionTime, long memoryUsedMedianR, long memoryUsedMedianW) {
+    public static void persistData (long executionTime, long memoryUsedMedian, long idleThreadTimeMedian , boolean isSingleThread, long fullExecutionTime, long exeR, long exeW) {
         DataCollected dataCollected = new DataCollected();
 
         dataCollected.setExecutionTime(executionTime);
         dataCollected.setMemory(memoryUsedMedian);
-        dataCollected.setMemoryR(memoryUsedMedianR);
-        dataCollected.setMemoryW(memoryUsedMedianW);
+        dataCollected.setExeR(exeR);
+        dataCollected.setExeW(exeW);
         dataCollected.setSingleThread(isSingleThread);
 
         if (!isSingleThread) {
@@ -61,15 +60,15 @@ public class LaboratoryUtils {
         return getSequentialExecutionTime() - parallelExecutionTime;
     }
 
-    public static long calculateAverageIdleTimeInMilliseconds(Map<Thread, Long> idleTimes) {
+    public static long calculateAverageIdleTimeInMilliseconds(List<Long> idleTimes) {
         if (idleTimes.isEmpty()) {
             return 0L;
         }
 
-        long totalIdleTime = idleTimes.values().stream().mapToLong(Long::longValue).sum();
-        int totalIdleThreads = idleTimes.size();
+        long size = idleTimes.size();
+        Long sum = idleTimes.stream().reduce(0L, Long::sum);
 
-        return totalIdleTime / totalIdleThreads;
+        return sum / size;
     }
 
     public static void setSequentialExecutionTime () {
@@ -97,18 +96,16 @@ public class LaboratoryUtils {
     }
     public static void executeAndCollectData(ExecuteService executeService, String threadType, int numIterations) {
         for (int controle = 0; controle < numIterations; controle++) {
-//            System.out.println("Initiating " + threadType + " capture number: " + controle);
+            System.out.println("Initiating " + threadType + " capture number: " + controle);
             long currentTimeMillis = System.currentTimeMillis();
             ExecutionResult result = executeService.execute();
             long executionTime = System.currentTimeMillis() - currentTimeMillis;
-            result.memoryUsed().addAll(result.memoryUsedR()); // we use the same initialMem to collect the memoryusedR, it validates the collect.
-            long memoryResult = LaboratoryUtils.getMedianMemory(result.memoryUsed());
-            long memoryResultW = LaboratoryUtils.getMedianMemory(result.memoryUsedW());
-            long memoryResultR = LaboratoryUtils.getMedianMemory(result.memoryUsedR());
+            long memoryResult = LaboratoryUtils.getArithmeticMean(result.memoryUsed());
+            long memoryResultW = LaboratoryUtils.getArithmeticMean(result.executionTimeR());
+            long memoryResultR = LaboratoryUtils.getArithmeticMean(result.executionTimeW());
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
-            System.out.println("run my baby run " + result.executionTime());
-//            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime, memoryResultR, memoryResultW);
-//            System.out.println("capture " + threadType + " nº " + controle + " collected successfully");
+            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime, memoryResultR, memoryResultW);
+            System.out.println("capture " + threadType + " nº " + controle + " collected successfully");
         }
     }
 }

@@ -5,7 +5,6 @@ import br.com.adapters.IMappingService;
 import br.com.adapters.IFileService;
 import br.com.model.ExecutionResult;
 import br.com.model.ProfessionalSalary;
-import br.com.utils.LaboratoryUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,15 +12,15 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static br.com.utils.LaboratoryUtils.getUsedThread;
 
 public class ExecuteService implements IExecuteService {
+//  private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
   private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
@@ -40,20 +39,32 @@ public class ExecuteService implements IExecuteService {
       CountDownLatch latch = new CountDownLatch(tempFiles.size());
       List<Path> processedFiles = Collections.synchronizedList(new ArrayList<>());
       List<Long> memoryUsed = Collections.synchronizedList(new ArrayList<>());
-      List<Long> memoryUsedR = Collections.synchronizedList(new ArrayList<>());
-      List<Long> memoryUsedW = Collections.synchronizedList(new ArrayList<>());
+      List<Long> executeTimeR = Collections.synchronizedList(new ArrayList<>());
+      List<Long> executeTimeW = Collections.synchronizedList(new ArrayList<>());
 
-      Map<Thread, Long> idleTimes = new ConcurrentHashMap<>();
+      List<Long> idleTimes =  Collections.synchronizedList(new ArrayList<>());
+      AtomicLong lastEndTime = new AtomicLong(0);
 
       long currentTimeMillis = System.currentTimeMillis();
       for (Path tempFile : tempFiles) {
         bucketExecutor.submit(() -> {
+          long last = lastEndTime.get();
           long startTime = System.currentTimeMillis();
+          long idleTime = startTime - last;
+
+          if (lastEndTime.get() > 0) {
+            idleTimes.add(idleTime);
+          }
+
           try {
 
             long initialMemory = this.getMemoryNow();
+
+            long getTime =  System.currentTimeMillis();
             List<ProfessionalSalary> professionalSalaries = fileService.read(tempFile.toString());
-            memoryUsedR.add(this.getMemoryUsed(initialMemory));
+            executeTimeR.add(System.currentTimeMillis() - getTime);
+
+            memoryUsed.add(this.getMemoryUsed(initialMemory));
 
             for (ProfessionalSalary professionalSalary : professionalSalaries) {
               int titleHash = mappingService.getTitleHash(professionalSalary.getJobTitle());
@@ -65,23 +76,19 @@ public class ExecuteService implements IExecuteService {
 
             memoryUsed.add(this.getMemoryUsed(initialMemory));
 
-            long beforeMemoryRead = this.getMemoryNow();
+            getTime =  System.currentTimeMillis();
             processedFiles.add(fileService.write(professionalSalaries));
-            memoryUsedW.add(this.getMemoryUsed(beforeMemoryRead));
+            executeTimeW.add(System.currentTimeMillis() - getTime);
 
             memoryUsed.add(this.getMemoryUsed(initialMemory));
 
             this.deleteFile(tempFile);
-
           } catch (Exception e){
             throw new RuntimeException("Erro ao executar o serviço", e);
           } finally {
             long endTime = System.currentTimeMillis();
-            long idleTime = endTime - startTime;
+            lastEndTime.set(endTime);
 
-            if (idleTime > 0) {
-              idleTimes.merge(Thread.currentThread(), idleTime, Long::sum);
-            }
             latch.countDown();
           }
         });
@@ -90,10 +97,8 @@ public class ExecuteService implements IExecuteService {
       latch.await();
       long executionTime = System.currentTimeMillis() - currentTimeMillis;
 
-      if (LaboratoryUtils.getUsedThread() < 5) {
-        processedFiles.forEach(this::deleteFile);
-      }
-      return new ExecutionResult(memoryUsed, memoryUsedR, memoryUsedW, idleTimes, executionTime);
+      processedFiles.forEach(this::deleteFile);
+      return new ExecutionResult(memoryUsed, executeTimeR, executeTimeW, idleTimes, executionTime);
     } catch (Exception e) {
       throw new RuntimeException("Erro ao executar o serviço", e);
     }

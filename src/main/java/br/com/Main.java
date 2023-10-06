@@ -13,15 +13,15 @@ public class Main {
     public static void main(String[] args) {
         IMappingService mappingService = new MappingService();
         IFileService readerService = new FileService();
-        int repeatNum = 5;
+        int repeatNum = 15000;
 
-        for (int i = 2; i <= 5; i++) {
+        for (int maxThread = 1; maxThread <= 4; maxThread++) {
             String type = "singleThread";
-            if (i > 1) {
+            if (maxThread > 1) {
                 LaboratoryUtils.setSequentialExecutionTime();
                 type = "multiThread";
             }
-            LaboratoryUtils.setUsedThread(i);
+            LaboratoryUtils.setUsedThread(maxThread);
             LaboratoryUtils.insertData();
             ExecuteService executeService = new ExecuteService(readerService, mappingService);
             executeAndCollectData(executeService, type, repeatNum);

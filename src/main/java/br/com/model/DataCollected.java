@@ -1,7 +1,5 @@
 package br.com.model;
 
-import br.com.utils.LaboratoryUtils;
-
 public class DataCollected {
     public long getMemory() {
         return memory;
@@ -56,20 +54,6 @@ public class DataCollected {
     public void setIdleThreadTimeMedian(long idleThreadTimeMedian) {
         this.idleThreadTimeMedian = idleThreadTimeMedian;
     }
-    public void setMemoryR(long memoryR) {
-        this.memoryR = memoryR;
-    }
-
-    public long getMemoryW() {
-        return memoryW;
-    }
-
-    public void setMemoryW(long memoryW) {
-        this.memoryW = memoryW;
-    }
-    public long getMemoryR() {
-        return memoryR;
-    }
     public long getFullExecutionTime() {
         return fullExecutionTime;
     }
@@ -77,6 +61,22 @@ public class DataCollected {
     public void setFullExecutionTime(long fullExecutionTime) {
         this.fullExecutionTime = fullExecutionTime;
     }
+    public long getExeR() {
+        return exeR;
+    }
+
+    public void setExeR(long exeR) {
+        this.exeR = exeR;
+    }
+
+    public long getExeW() {
+        return exeW;
+    }
+
+    public void setExeW(long exeW) {
+        this.exeW = exeW;
+    }
+
     private long memory = 0;
     private double speedup = 0;
     private double efficiency = 0;
@@ -85,6 +85,6 @@ public class DataCollected {
     private long idleThreadTimeMedian = 0;
     private boolean isSingleThread = false;
     private long fullExecutionTime = 0;
-    private long memoryR = 0;
-    private long memoryW = 0;
+    private long exeR = 0;
+    private long exeW = 0;
 }
