@@ -15,7 +15,7 @@ public class Main {
         IFileService readerService = new FileService();
         int repeatNum = 5;
 
-        for (int i = 2; i <= 6; i++) {
+        for (int i = 2; i <= 5; i++) {
             String type = "singleThread";
             if (i > 1) {
                 LaboratoryUtils.setSequentialExecutionTime();
