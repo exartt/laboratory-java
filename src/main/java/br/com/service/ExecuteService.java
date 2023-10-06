@@ -90,7 +90,7 @@ public class ExecuteService implements IExecuteService {
       latch.await();
       long executionTime = System.currentTimeMillis() - currentTimeMillis;
 
-      if (LaboratoryUtils.getUsedThread() < 6) {
+      if (LaboratoryUtils.getUsedThread() < 5) {
         processedFiles.forEach(this::deleteFile);
       }
       return new ExecutionResult(memoryUsed, memoryUsedR, memoryUsedW, idleTimes, executionTime);
