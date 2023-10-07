@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import static br.com.utils.LaboratoryUtils.getUsedThread;
 
 public class ExecuteService implements IExecuteService {
-  private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
-//  private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
+//  private static final String filePath = "src/main/resources/Software_Professional_Salaries.csv";
+  private static final String filePath = "/home/opc/laboratory-java/src/main/resources/Software_Professional_Salaries.csv";
   private final IFileService fileService;
   private final IMappingService mappingService;
   private final ExecutorService bucketExecutor = Executors.newFixedThreadPool(getUsedThread());
