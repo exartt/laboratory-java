@@ -123,4 +123,21 @@ public class FileService implements IFileService {
     private static boolean isDelimiterOutsideQuotes(char character, boolean insideQuotes) {
         return character == DELIMITER && !insideQuotes;
     }
+
+    @Override
+    public boolean hasThousandLines(Path filePath, long size) {
+        int lineCount = 0;
+        try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+            while (reader.readLine() != null) {
+                lineCount++;
+                if (lineCount > size) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return lineCount == size;
+    }
 }

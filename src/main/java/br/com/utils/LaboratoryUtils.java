@@ -25,7 +25,7 @@ public class LaboratoryUtils {
         return ret.longValueExact();
     }
 
-    public static void persistData (long executionTime, long memoryUsedMedian, long idleThreadTimeMedian , boolean isSingleThread, long fullExecutionTime, long exeR, long exeW) {
+    public static void persistData (long executionTime, long memoryUsedMedian, long idleThreadTimeMedian , boolean isSingleThread, long fullExecutionTime, long exeR, long exeW, boolean isValid) {
         DataCollected dataCollected = new DataCollected();
 
         dataCollected.setExecutionTime(executionTime);
@@ -44,6 +44,7 @@ public class LaboratoryUtils {
         }
         dataCollected.setFullExecutionTime(fullExecutionTime);
         dataCollected.setIdleThreadTimeMedian(idleThreadTimeMedian);
+        dataCollected.setValid(isValid);
         PersistData persistData = new PersistData();
         persistData.insert(dataCollected);
     }
@@ -104,7 +105,7 @@ public class LaboratoryUtils {
             long memoryResultW = LaboratoryUtils.getArithmeticMean(result.executionTimeR());
             long memoryResultR = LaboratoryUtils.getArithmeticMean(result.executionTimeW());
             long idleThreadTime = LaboratoryUtils.calculateAverageIdleTimeInMilliseconds(result.idleTimes());
-            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime, memoryResultR, memoryResultW);
+            LaboratoryUtils.persistData(result.executionTime(), memoryResult, idleThreadTime, threadType.equals("singleThread"), executionTime, memoryResultR, memoryResultW, result.isValid().get());
             System.out.println("capture " + threadType + " nº " + controle + " collected successfully");
         }
     }

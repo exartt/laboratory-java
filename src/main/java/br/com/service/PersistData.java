@@ -15,8 +15,8 @@ import static br.com.utils.LaboratoryUtils.getSequentialExecutionTime;
 import static br.com.utils.LaboratoryUtils.getUsedThread;
 
 public class PersistData implements IPersist {
-    private static final String INSERT_SQL = "INSERT INTO j_data (m_thread, m_memory, m_execution_r, m_execution_w,  m_speed_up, m_efficiency, m_execution_time, m_overhead, m_iddle_thread, m_full_execution_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String INSERT_SQL_OT = "INSERT INTO j_data_ot (m_thread, m_memory, m_execution_r, m_execution_w, m_execution_time, m_iddle_thread, m_full_execution_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO j_data (m_thread, m_memory, m_execution_r, m_execution_w,  m_speed_up, m_efficiency, m_execution_time, m_overhead, m_iddle_thread, m_full_execution_time, m_is_valid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_SQL_OT = "INSERT INTO j_data_ot (m_thread, m_memory, m_execution_r, m_execution_w, m_execution_time, m_iddle_thread, m_full_execution_time, m_is_valid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String INSERT_RECORD_PARAM = "INSERT INTO record_params (r_sequential_time, r_max_threads, r_lang) VALUES (?, ?, ?)";
     public void insert(DataCollected dataCollected) {
         try (Connection conn = DatabaseConnection.getConnection()) {
@@ -40,8 +40,8 @@ public class PersistData implements IPersist {
                     stmt.setDouble(count.getAndIncrement(), dataCollected.getIdleThreadTimeMedian());
                 }
 
-                stmt.setLong(count.get(), dataCollected.getFullExecutionTime());
-
+                stmt.setLong(count.getAndIncrement(), dataCollected.getFullExecutionTime());
+                stmt.setBoolean(count.get(), dataCollected.isValid());
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {

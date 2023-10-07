@@ -1,6 +1,9 @@
 package br.com.model;
 
 public class DataCollected {
+    public DataCollected() {
+    }
+
     public long getMemory() {
         return memory;
     }
@@ -76,6 +79,13 @@ public class DataCollected {
     public void setExeW(long exeW) {
         this.exeW = exeW;
     }
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 
     private long memory = 0;
     private double speedup = 0;
@@ -87,4 +97,5 @@ public class DataCollected {
     private long fullExecutionTime = 0;
     private long exeR = 0;
     private long exeW = 0;
+    private boolean valid;
 }

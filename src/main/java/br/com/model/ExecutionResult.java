@@ -6,4 +6,5 @@ public record ExecutionResult(List<Long> memoryUsed,
                               List<Long> executionTimeR,
                               List<Long> executionTimeW,
                               List<Long> idleTimes,
-                              long executionTime) {}
+                              long executionTime,
+                              java.util.concurrent.atomic.AtomicBoolean isValid) {}
