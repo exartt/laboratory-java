@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         IMappingService mappingService = new MappingService();
         IFileService readerService = new FileService();
-        int repeatNum = 10000;
+        int repeatNum = 10;
 
         for (int maxThread = 10; maxThread <= 22; maxThread++) {
             String type = "singleThread";
