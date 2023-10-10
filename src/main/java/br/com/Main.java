@@ -13,9 +13,9 @@ public class Main {
     public static void main(String[] args) {
         IMappingService mappingService = new MappingService();
         IFileService readerService = new FileService();
-        int repeatNum = 5;
+        int repeatNum = 10000;
 
-        for (int maxThread = 1; maxThread <= 10; maxThread++) {
+        for (int maxThread = 10; maxThread <= 10; maxThread++) {
             String type = "singleThread";
             if (maxThread > 1) {
                 LaboratoryUtils.setSequentialExecutionTime();
